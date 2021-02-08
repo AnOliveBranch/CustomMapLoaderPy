@@ -13,10 +13,13 @@ else:
 
 
 def printHelp():
-    print('Usage: custommaploader [--help] {setup,list,setmap}')
+    print('Usage: custommaploader [--help] {setup,setmap,list}')
     print()
     print('custommaploader setup')
     printSetupHelp()
+    print()
+    print('custommaploader setmap')
+    printSetmapHelp()
 
 
 def printSetupHelp():
@@ -24,15 +27,39 @@ def printSetupHelp():
     print('\tRocket League folder should be something like ~/.local/share/Steam/steamapps/common/rocketleague')
     print('\tMaps folder should contain folders of custom maps')
 
+
+def printSetmapHelp():
+    print('Usage: custommaploader setmap (map name)')
+    print('\tAvailable maps can be found with custommaploader list')
+
+
 def checkPath(type):
     if (config_data[type + 'Path'] == ''):
         print('Path for', type, 'has not been setup yet')
         printSetupHelp()
         exit()
     if (not os.path.isdir(config_data[type + 'Path'])):
-        print('The stored', type, 'path (', config_data[type + 'Path'], ') no longer exists')
+        print('The stored', type,
+              'path (', config_data[type + 'Path'], ') no longer exists')
         print('You\'ll need to re-run the setup command for', type)
         printSetupHelp()
+        exit()
+
+
+def checkValidMap(map):
+    mapPath = config_data['mapsPath'] + '/' + map
+    if (not os.path.isdir(mapPath)):
+        print('Couldn\'t find the map folder for', map)
+        exit()
+    mapFileCount = 0
+    for f in os.listdir(mapPath):
+        if (f.endswith('.udk') or f.endswith('.upk')):
+            mapFileCount += 1
+    if (mapFileCount == 0):
+        print('Couldn\'t find any map files (*.udk, *.upk) in the map folder')
+        exit()
+    if (mapFileCount > 1):
+        print('Found more than 1 map file (*.udk, *.upk) in the map folder (found', mapFileCount + ')')
         exit()
 
 if (len(args) == 0 or (args[0] == '--help' and len(args) == 1)):
@@ -72,9 +99,17 @@ if (args[0] == 'list'):
             for innerFile in os.listdir(newPath):
                 if (innerFile.endswith('.udk') or innerFile.endswith('.upk')):
                     print(name)
+                    break
     print('Underpass (reset to vanilla)')
     exit()
 
 if (args[0] == 'setmap'):
     checkPath('maps')
     checkPath('game')
+    if (len(args) == 1):
+        printSetmapHelp()
+        exit()
+    mapName = ' '.join(args[1:])
+    print(mapName)
+    checkValidMap(mapName)
+    print('valid')
