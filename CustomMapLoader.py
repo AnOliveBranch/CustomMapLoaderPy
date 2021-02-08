@@ -47,3 +47,6 @@ if (args[0] == 'setup'):
 
     with open(os.path.expanduser('~/.custommaploaderrc'), 'w') as outfile:
         json.dump(config_data, outfile)
+
+    print('Path for', args[1], 'set to', path)
+    exit()
