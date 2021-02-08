@@ -24,6 +24,16 @@ def printSetupHelp():
     print('\tRocket League folder should be something like ~/.local/share/Steam/steamapps/common/rocketleague')
     print('\tMaps folder should contain folders of custom maps')
 
+def checkPath(type):
+    if (config_data[type + 'Path'] == ''):
+        print('Path for', type, 'has not been setup yet')
+        printSetupHelp()
+        exit()
+    if (not os.path.isdir(config_data[type + 'Path'])):
+        print('The stored', type, 'path (', config_data[type + 'Path'], ') no longer exists')
+        print('You\'ll need to re-run the setup command for', type)
+        printSetupHelp()
+        exit()
 
 if (len(args) == 0 or (args[0] == '--help' and len(args) == 1)):
     printHelp()
@@ -52,14 +62,7 @@ if (args[0] == 'setup'):
     exit()
 
 if (args[0] == 'list'):
-    if (config_data['mapsPath'] == ''):
-        print('Path for maps has not been setup yet')
-        printSetupHelp()
-        exit()
-    if (not os.path.isdir(config_data['mapsPath'])):
-        print('The stored maps path no longer exists')
-        printSetupHelp()
-        exit()
+    checkPath('maps')
     path = os.path.abspath(config_data['mapsPath'])
 
     print('The following maps are available for selection')
@@ -71,3 +74,7 @@ if (args[0] == 'list'):
                     print(name)
     print('Underpass (reset to vanilla)')
     exit()
+
+if (args[0] == 'setmap'):
+    checkPath('maps')
+    checkPath('game')
