@@ -16,14 +16,14 @@ Setup & Installation
 * * On Linux systems, this is likely `~/.local/share/Steam/steamapps/common/rocketleague`
 * * On Windows systems, this is likely `C:/Program Files(x86)/Steam/steamapps/common/rocketleague`
 * * On Windows Epic client, this may be `C:/Program Files/Epic Games/rocketleague`
-* To see your available custom maps to choose from, run `custommaploader list`
-* To load a custom map, run `custommaploader setmap (map)`, where `map` is one of the options from `custommaploader list`
-* The script will replace your Underpass map with the custom map, backing up the orginal Underpass map in the process
-* If you ever want to restore the original Underpass, just run `custommaploader setmap Underpass`
 * You will also need to download and install the Workshop Textures found [here](https://drive.google.com/drive/folders/1fvMMw0jGkkGr0fZpme9tWlwD3hC5LX0W) (link from Lethamyr's video [here](https://www.youtube.com/watch?v=vfIIa2cUZSE))
 * * Download the .zip file
 * * Navigate to your rocketleague folder that you setup above
 * * Extract the contents of the .zip to `rocketleague/TAGame/CookedPCConsole`
+* To see your available custom maps to choose from, run `custommaploader list`
+* To load a custom map, run `custommaploader setmap (map)`, where `map` is one of the options from `custommaploader list`
+* The script will replace your Underpass map with the custom map, backing up the orginal Underpass map in the process
+* If you ever want to restore the original Underpass, just run `custommaploader setmap Underpass`
 
 Uninstallation
 -----------
