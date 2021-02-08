@@ -3,6 +3,7 @@
 import sys
 import os
 import json
+from shutil import copyfile
 
 args = sys.argv[1:]
 if (os.path.isfile(os.path.expanduser('~/.custommaploaderrc'))):
@@ -62,10 +63,12 @@ def checkValidMap(map):
         print('Error: Found more than 1 map file (*.udk, *.upk) in the map folder (found', mapFileCount + ')')
         exit()
 
+
 def backupUnderpass():
     cookedPath = config_data['gamePath'] + '/TAGame/CookedPCConsole'
     if (not os.path.isdir(cookedPath)):
-        print('Error: Couldn\'t find folder TAGame/CookedPCConsole in', config_data['gamePath'])
+        print('Error: Couldn\'t find folder TAGame/CookedPCConsole in',
+              config_data['gamePath'])
         print('This folder is critical to Rocket League to function, ensure you have setup the proper folder')
         printSetupHelp()
         exit()
@@ -73,7 +76,17 @@ def backupUnderpass():
         print('Warning: Couldn\'t find the Underpass map to backup, continuing anyway')
     else:
         if (not os.path.isfile(cookedPath + '/Labs_Underpass_P_BACKUP.upk')):
-            os.rename(cookedPath + '/Labs_Underpass_P.upk', cookedPath + '/Labs_Underpass_P_BACKUP.upk')
+            os.rename(cookedPath + '/Labs_Underpass_P.upk',
+                      cookedPath + '/Labs_Underpass_P_BACKUP.upk')
+
+
+def getMapFilePath(mapName):
+    folderPath = config_data['mapsPath'] + '/' + mapName
+    for f in os.listdir(folderPath):
+        if (f.endswith('.udk') or f.endswith('.upk')):
+            return folderPath + '/' + f
+    return ''
+
 
 if (len(args) == 0 or (args[0] == '--help' and len(args) == 1)):
     printHelp()
@@ -84,7 +97,7 @@ if (args[0] == 'setup'):
         printSetupHelp()
         exit()
 
-    path = ' '.join(args[2:])
+    path = os.path.abspath(' '.join(args[2:]))
     if (not os.path.isdir(path)):
         print('Error:', path, 'is not a valid directory')
         printSetupHelp()
@@ -124,12 +137,17 @@ if (args[0] == 'setmap'):
         printSetmapHelp()
         exit()
     mapName = ' '.join(args[1:])
-
+    cookedPath = config_data['gamePath'] + '/TAGame/CookedPCConsole'
     if (mapName == 'Underpass'):
-        cookedPath = config_data['gamePath'] + '/TAGame/CookedPCConsole'
         if (os.path.isfile(cookedPath + '/Labs_Underpass_P_BACKUP.upk')):
-            os.replace(cookedPath + '/Labs_Underpass_P_BACKUP.upk', cookedPath + '/Labs_Underpass_P.upk')
+            os.replace(cookedPath + '/Labs_Underpass_P_BACKUP.upk',
+                       cookedPath + '/Labs_Underpass_P.upk')
             print('The Underpass map has been restored to vanilla')
-            exit()
+        else:
+            print('Error: No backup Underpass to restore from')
+        exit()
     checkValidMap(mapName)
     backupUnderpass()
+    mapPath = getMapFilePath(mapName)
+    copyfile(mapPath, cookedPath + '/Labs_Underpass_P.upk')
+    print('The', mapName, 'map has been loaded, replacing Underpass')
