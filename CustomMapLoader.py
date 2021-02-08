@@ -62,6 +62,19 @@ def checkValidMap(map):
         print('Error: Found more than 1 map file (*.udk, *.upk) in the map folder (found', mapFileCount + ')')
         exit()
 
+def backupUnderpass():
+    cookedPath = config_data['gamePath'] + '/TAGame/CookedPCConsole'
+    if (not os.path.isdir(cookedPath)):
+        print('Error: Couldn\'t find folder TAGame/CookedPCConsole in', config_data['gamePath'])
+        print('This folder is critical to Rocket League to function, ensure you have setup the proper folder')
+        printSetupHelp()
+        exit()
+    if (not os.path.isfile(cookedPath + '/Labs_Underpass_P.upk')):
+        print('Warning: Couldn\'t find the Underpass map to backup, continuing anyway')
+    else:
+        if (not os.path.isfile(cookedPath + '/Labs_Underpass_P_BACKUP.upk')):
+            os.rename(cookedPath + '/Labs_Underpass_P.upk', cookedPath + '/Labs_Underpass_P_BACKUP.upk')
+
 if (len(args) == 0 or (args[0] == '--help' and len(args) == 1)):
     printHelp()
     exit()
@@ -100,7 +113,8 @@ if (args[0] == 'list'):
                 if (innerFile.endswith('.udk') or innerFile.endswith('.upk')):
                     print(name)
                     break
-    print('Underpass (reset to vanilla)')
+    if (os.path.isfile(config_data['gamePath'] + '/TAGame/CookedPCConsole/Labs_Underpass_P_BACKUP.upk')):
+        print('Underpass (reset to vanilla)')
     exit()
 
 if (args[0] == 'setmap'):
@@ -110,4 +124,12 @@ if (args[0] == 'setmap'):
         printSetmapHelp()
         exit()
     mapName = ' '.join(args[1:])
+
+    if (mapName == 'Underpass'):
+        cookedPath = config_data['gamePath'] + '/TAGame/CookedPCConsole'
+        if (os.path.isfile(cookedPath + '/Labs_Underpass_P_BACKUP.upk')):
+            os.replace(cookedPath + '/Labs_Underpass_P_BACKUP.upk', cookedPath + '/Labs_Underpass_P.upk')
+            print('The Underpass map has been restored to vanilla')
+            exit()
     checkValidMap(mapName)
+    backupUnderpass()
