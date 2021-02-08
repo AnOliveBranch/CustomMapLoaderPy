@@ -33,3 +33,5 @@ Uninstallation
 * Delete `.custommaploaderrc` from your home directory
 * * On Linux systems, this will usually be `/home/[user]`
 * * On Windows systems, this will usually be `C:/Users/[user]`
+
+If you have any questions or problems, don't hesitate to contact me. Either file an issue on this repo, or contact me through Discord at Robotic#1111
