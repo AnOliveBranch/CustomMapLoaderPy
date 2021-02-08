@@ -50,3 +50,24 @@ if (args[0] == 'setup'):
 
     print('Path for', args[1], 'set to', path)
     exit()
+
+if (args[0] == 'list'):
+    if (config_data['mapsPath'] == ''):
+        print('Path for maps has not been setup yet')
+        printSetupHelp()
+        exit()
+    if (not os.path.isdir(config_data['mapsPath'])):
+        print('The stored maps path no longer exists')
+        printSetupHelp()
+        exit()
+    path = os.path.abspath(config_data['mapsPath'])
+
+    print('The following maps are available for selection')
+    for name in sorted(os.listdir(path)):
+        newPath = path + '/' + name
+        if (os.path.isdir(newPath)):
+            for innerFile in os.listdir(newPath):
+                if (innerFile.endswith('.udk') or innerFile.endswith('.upk')):
+                    print(name)
+    print('Underpass (reset to vanilla)')
+    exit()
